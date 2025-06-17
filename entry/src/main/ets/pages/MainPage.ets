@@ -1,11 +1,10 @@
-
-
 import AccountTable from '../common/database/tables/AccountTable';
 import AccountData from '../viewmodel/AccountData';
 import CommonConstants from '../common/constants/CommonConstants';
 import { DialogComponent } from '../view/DialogComponent';
 import { ImageList } from '../viewmodel/AccountList';
 import Logger from '../common/utils/Logger';
+import { PostingDialog } from '../view/PostingDialog';
 
 @Entry
 @Component
@@ -14,11 +13,27 @@ struct MainPage {
   @State searchText: string = '';
   @State isEdit: boolean = false;
   @State isInsert: boolean = false;
-  @State newAccount: AccountData = { id: 0, accountType: 0, typeText: '', amount: 0 };
+  @State newAccount: AccountData = {
+    id: 0,
+    accountType: 0,
+    typeText: '',
+    amount: 0
+  };
   @State index: number = -1;
-  private AccountTable = new AccountTable(() => {});
+
+  //post弹窗使用
+  @State item: AccountData = {
+    id: 0,
+    accountType: 0,
+    typeText: '',
+    amount: 0
+  };
+
+  private AccountTable = new AccountTable(() => {
+  });
   private deleteList: Array<AccountData> = [];
   searchController: SearchController = new SearchController();
+
   dialogController: CustomDialogController = new CustomDialogController({
     builder: DialogComponent({
       isInsert: $isInsert,
@@ -28,6 +43,39 @@ struct MainPage {
     customStyle: true,
     alignment: DialogAlignment.Bottom
   });
+
+  /**
+   * post弹窗
+   * @param item
+   */
+  postDialog: CustomDialogController = new CustomDialogController({
+    builder: PostingDialog({
+      item: this.item,
+    }),
+    customStyle: true,
+    alignment: DialogAlignment.Bottom
+  });
+
+  //list右滑分享
+  @Builder
+  itemEnd(item: AccountData) {
+    // 构建尾端滑出组件
+    Image($r('app.media.share'))
+      .width(34)
+      .height(34)
+      .margin({
+        left: 20,
+        right: 20,
+        bottom: 10,
+        top: 10
+      })
+      .onClick(() => {
+        //日志打印item里的内容
+        console.log("日志：" + JSON.stringify(item))
+        this.item = item;
+        this.postDialog.open()
+      })
+  }
 
   accept(isInsert: boolean, newAccount: AccountData): void {
     if (isInsert) {
@@ -132,7 +180,7 @@ struct MainPage {
 
         Row() {
           List({ space: CommonConstants.FULL_SIZE }) {
-            ForEach(this.accounts, (item: AccountData) => {
+            ForEach(this.accounts, (item: AccountData, index: number) => {
               ListItem() {
                 Row() {
                   Image(ImageList[item.typeText])
@@ -153,6 +201,7 @@ struct MainPage {
                       .fontColor(item.accountType === 0 ? $r('app.color.pay_color') : $r('app.color.main_color'))
                       .align(Alignment.End)
                       .flexGrow(CommonConstants.FULL_SIZE)
+
                   } else {
                     Row() {
                       Toggle({ type: ToggleType.Checkbox })
@@ -180,6 +229,15 @@ struct MainPage {
                 this.selectListItem(item);
                 this.dialogController.open();
               })
+              .swipeAction({
+                end: {
+                  builder: () => {
+                    // this.item = item;
+                    this.itemEnd(item)
+                  }
+                }
+              })
+
             })
           }
           .width(CommonConstants.FULL_WIDTH)
@@ -203,7 +261,12 @@ struct MainPage {
         .position({ x: CommonConstants.EDIT_POSITION_X, y: CommonConstants.EDIT_POSITION_Y })
         .onClick(() => {
           this.isInsert = true;
-          this.newAccount = { id: 0, accountType: 0, typeText: '', amount: 0 };
+          this.newAccount = {
+            id: 0,
+            accountType: 0,
+            typeText: '',
+            amount: 0
+          };
           this.dialogController.open();
         })
       }

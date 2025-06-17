@@ -1,7 +1,5 @@
-
-
 import { relationalStore } from '@kit.ArkData';
-import { AccountTable } from '../../viewmodel/ConstantsInterface';
+import { AccountTable, PostTable } from '../../viewmodel/ConstantsInterface';
 
 export default class CommonConstants {
   /**
@@ -20,6 +18,25 @@ export default class CommonConstants {
       'typeText TEXT, amount INTEGER)',
     columns: ['id', 'accountType', 'typeText', 'amount']
   };
+
+  /**
+   * post表配置
+   */
+  static readonly POST_TABLE: PostTable = {
+    tableName: 'postTable',
+    sqlCreate: 'CREATE TABLE IF NOT EXISTS postTable (\n' +
+      '  id INTEGER PRIMARY KEY AUTOINCREMENT,\n' +
+      '  userName TEXT,\n' +
+      '  userPicture TEXT,\n' +
+      '  postTitle TEXT,\n' +
+      '  postBody TEXT,\n' +
+      '  commentNum INTEGER DEFAULT 0,\n' +
+      '  likeNum INTEGER DEFAULT 0,\n' +
+      '  isLiked TEXT,\n' +
+      '  commentStr TEXT\n' +
+      ')',
+    columns: ['id', 'userName', 'userPicture', 'postTitle','postBody','commentNum','likeNum','isLiked','commentStr']
+  };
   /**
    * Search text of Search component.
    */
@@ -35,6 +52,8 @@ export default class CommonConstants {
   static readonly FULL_WIDTH = '100%';
   static readonly FULL_HEIGHT = '100%';
   static readonly DIALOG_HEIGHT = '55%';
+  static readonly DIALOG_HEIGHT_2 = '75%';
+  static readonly COMPONENT_SIZE_M = '40%';
   static readonly TABS_HEIGHT = '45%';
   static readonly MINIMUM_SIZE = 0;
   static readonly FULL_SIZE = 1;
@@ -50,6 +69,12 @@ export default class CommonConstants {
    * Log tag.
    */
   static readonly RDB_TAG = '[Debug.Rdb]';
-  static readonly TABLE_TAG = '[Debug.AccountTable]';
+  static readonly TABLE_TAG_ACOUNTTABLE = '[Debug.AccountTable]';
+  static readonly TABLE_TAG_POSTTABLE = '[Debug.AccountTable]';
   static readonly INDEX_TAG = '[Debug.Index]';
+  /**
+   * 默认数据
+   */
+  static DEFAULT_USERNAME = '默认用户名'
+  static DEFAULT_AVATOR = 'app.media.default_avator'
 }

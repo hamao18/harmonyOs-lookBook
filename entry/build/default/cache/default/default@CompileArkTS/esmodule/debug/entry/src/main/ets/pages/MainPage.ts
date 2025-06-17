@@ -8,10 +8,16 @@ interface MainPage_Params {
     isInsert?: boolean;
     newAccount?: AccountData;
     index?: number;
+    item?: AccountData;
     AccountTable?;
     deleteList?: Array<AccountData>;
     searchController?: SearchController;
     dialogController?: CustomDialogController;
+    /**
+     * post弹窗
+     * @param item
+     */
+    postDialog?: CustomDialogController;
 }
 import AccountTable from "@bundle:com.example.rdb/entry/ets/common/database/tables/AccountTable";
 import type AccountData from '../viewmodel/AccountData';
@@ -19,6 +25,7 @@ import CommonConstants from "@bundle:com.example.rdb/entry/ets/common/constants/
 import { DialogComponent } from "@bundle:com.example.rdb/entry/ets/view/DialogComponent";
 import { ImageList } from "@bundle:com.example.rdb/entry/ets/viewmodel/AccountList";
 import Logger from "@bundle:com.example.rdb/entry/ets/common/utils/Logger";
+import { PostingDialog } from "@bundle:com.example.rdb/entry/ets/view/PostingDialog";
 class MainPage extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -29,9 +36,21 @@ class MainPage extends ViewPU {
         this.__searchText = new ObservedPropertySimplePU('', this, "searchText");
         this.__isEdit = new ObservedPropertySimplePU(false, this, "isEdit");
         this.__isInsert = new ObservedPropertySimplePU(false, this, "isInsert");
-        this.__newAccount = new ObservedPropertyObjectPU({ id: 0, accountType: 0, typeText: '', amount: 0 }, this, "newAccount");
+        this.__newAccount = new ObservedPropertyObjectPU({
+            id: 0,
+            accountType: 0,
+            typeText: '',
+            amount: 0
+        }, this, "newAccount");
         this.__index = new ObservedPropertySimplePU(-1, this, "index");
-        this.AccountTable = new AccountTable(() => { });
+        this.__item = new ObservedPropertyObjectPU({
+            id: 0,
+            accountType: 0,
+            typeText: '',
+            amount: 0
+        }, this, "item");
+        this.AccountTable = new AccountTable(() => {
+        });
         this.deleteList = [];
         this.searchController = new SearchController();
         this.dialogController = new CustomDialogController({
@@ -40,7 +59,7 @@ class MainPage extends ViewPU {
                     isInsert: this.__isInsert,
                     newAccount: this.__newAccount,
                     confirm: (isInsert: boolean, newAccount: AccountData) => this.accept(isInsert, newAccount)
-                }, undefined, -1, () => { }, { page: "entry/src/main/ets/pages/MainPage.ets", line: 23, col: 14 });
+                }, undefined, -1, () => { }, { page: "entry/src/main/ets/pages/MainPage.ets", line: 38, col: 14 });
                 jsDialog.setController(this.dialogController);
                 ViewPU.create(jsDialog);
                 let paramsLambda = () => {
@@ -48,6 +67,28 @@ class MainPage extends ViewPU {
                         isInsert: this.__isInsert,
                         newAccount: this.__newAccount,
                         confirm: (isInsert: boolean, newAccount: AccountData) => this.accept(isInsert, newAccount)
+                    };
+                };
+                jsDialog.paramsGenerator_ = paramsLambda;
+            },
+            customStyle: true,
+            alignment: DialogAlignment.Bottom
+        }, this);
+        this.postDialog = new CustomDialogController({
+            builder: () => {
+                let jsDialog = new PostingDialog(this, {
+                    item: this.item,
+                }, undefined, -1, () => { }, { page: "entry/src/main/ets/pages/MainPage.ets", line: 52, col: 14 });
+                jsDialog.setController(this.
+                /**
+                 * post弹窗
+                 * @param item
+                 */
+                postDialog);
+                ViewPU.create(jsDialog);
+                let paramsLambda = () => {
+                    return {
+                        item: this.item
                     };
                 };
                 jsDialog.paramsGenerator_ = paramsLambda;
@@ -77,6 +118,9 @@ class MainPage extends ViewPU {
         if (params.index !== undefined) {
             this.index = params.index;
         }
+        if (params.item !== undefined) {
+            this.item = params.item;
+        }
         if (params.AccountTable !== undefined) {
             this.AccountTable = params.AccountTable;
         }
@@ -89,6 +133,9 @@ class MainPage extends ViewPU {
         if (params.dialogController !== undefined) {
             this.dialogController = params.dialogController;
         }
+        if (params.postDialog !== undefined) {
+            this.postDialog = params.postDialog;
+        }
     }
     updateStateVars(params: MainPage_Params) {
     }
@@ -99,6 +146,7 @@ class MainPage extends ViewPU {
         this.__isInsert.purgeDependencyOnElmtId(rmElmtId);
         this.__newAccount.purgeDependencyOnElmtId(rmElmtId);
         this.__index.purgeDependencyOnElmtId(rmElmtId);
+        this.__item.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__accounts.aboutToBeDeleted();
@@ -107,6 +155,7 @@ class MainPage extends ViewPU {
         this.__isInsert.aboutToBeDeleted();
         this.__newAccount.aboutToBeDeleted();
         this.__index.aboutToBeDeleted();
+        this.__item.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -152,10 +201,48 @@ class MainPage extends ViewPU {
     set index(newValue: number) {
         this.__index.set(newValue);
     }
+    //post弹窗使用
+    private __item: ObservedPropertyObjectPU<AccountData>;
+    get item() {
+        return this.__item.get();
+    }
+    set item(newValue: AccountData) {
+        this.__item.set(newValue);
+    }
     private AccountTable;
     private deleteList: Array<AccountData>;
     private searchController: SearchController;
     private dialogController: CustomDialogController;
+    /**
+     * post弹窗
+     * @param item
+     */
+    private postDialog: CustomDialogController;
+    //list右滑分享
+    itemEnd(item: AccountData, parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 构建尾端滑出组件
+            Image.create({ "id": 16777263, "type": 20000, params: [], "bundleName": "com.example.rdb", "moduleName": "entry" });
+            // 构建尾端滑出组件
+            Image.width(34);
+            // 构建尾端滑出组件
+            Image.height(34);
+            // 构建尾端滑出组件
+            Image.margin({
+                left: 20,
+                right: 20,
+                bottom: 10,
+                top: 10
+            });
+            // 构建尾端滑出组件
+            Image.onClick(() => {
+                //日志打印item里的内容
+                console.log("日志打印：" + JSON.stringify(item));
+                this.item = item;
+                this.postDialog.open();
+            });
+        }, Image);
+    }
     accept(isInsert: boolean, newAccount: AccountData): void {
         if (isInsert) {
             Logger.info(`${CommonConstants.INDEX_TAG}`, `The account inserted is:  ${JSON.stringify(newAccount)}`);
@@ -287,7 +374,7 @@ class MainPage extends ViewPU {
         }, List);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             ForEach.create();
-            const forEachItemGenFunction = _item => {
+            const forEachItemGenFunction = (_item, index: number) => {
                 const item = _item;
                 {
                     const itemCreation = (elmtId, isInitialRender) => {
@@ -305,6 +392,14 @@ class MainPage extends ViewPU {
                         ListItem.onClick(() => {
                             this.selectListItem(item);
                             this.dialogController.open();
+                        });
+                        ListItem.swipeAction({
+                            end: {
+                                builder: () => {
+                                    // this.item = item;
+                                    this.itemEnd(item);
+                                }
+                            }
                         });
                     };
                     const deepRenderFunction = (elmtId, isInitialRender) => {
@@ -378,7 +473,7 @@ class MainPage extends ViewPU {
                     ListItem.pop();
                 }
             };
-            this.forEachUpdateFunction(elmtId, this.accounts, forEachItemGenFunction);
+            this.forEachUpdateFunction(elmtId, this.accounts, forEachItemGenFunction, undefined, true, false);
         }, ForEach);
         ForEach.pop();
         List.pop();
@@ -395,7 +490,12 @@ class MainPage extends ViewPU {
                         Button.position({ x: CommonConstants.EDIT_POSITION_X, y: CommonConstants.EDIT_POSITION_Y });
                         Button.onClick(() => {
                             this.isInsert = true;
-                            this.newAccount = { id: 0, accountType: 0, typeText: '', amount: 0 };
+                            this.newAccount = {
+                                id: 0,
+                                accountType: 0,
+                                typeText: '',
+                                amount: 0
+                            };
                             this.dialogController.open();
                         });
                     }, Button);

@@ -35,6 +35,12 @@ export default class AccountTable {
     this.accountTable.updateData(predicates, valueBucket, callback);
   }
 
+  /**
+   * 查询数据
+   * @param amount 金额，当 isAll 为 false 时作为过滤条件
+   * @param callback 回调函数，用于返回查询结果
+   * @param isAll 是否查询全部数据，默认为 true
+   */
   query(amount: number, callback: Function, isAll: boolean = true) {
     let predicates = new relationalStore.RdbPredicates(CommonConstants.ACCOUNT_TABLE.tableName);
     if (!isAll) {
@@ -43,7 +49,7 @@ export default class AccountTable {
     this.accountTable.query(predicates, (resultSet: relationalStore.ResultSet) => {
       let count: number = resultSet.rowCount;
       if (count === 0 || typeof count === 'string') {
-        console.log(`${CommonConstants.TABLE_TAG}` + 'Query no results!');
+        console.log(`${CommonConstants.TABLE_TAG_ACOUNTTABLE}` + 'Query no results!');
         callback([]);
       } else {
         resultSet.goToFirstRow();
