@@ -1,12 +1,27 @@
 import AccountData from "../viewmodel/AccountData";
 import { JSON } from "@kit.ArkTS";
 import CommonConstants from "../common/constants/CommonConstants";
-import { EarnList } from "../viewmodel/AccountList";
+import PostModel from "../viewmodel/PostModel";
+import PostTable from "../common/database/tables/PostTable";
 
 @CustomDialog
 export struct PostingDialog{
   controller?: CustomDialogController;
+
+  private PostTable = new PostTable(() => {});
   @Prop item: AccountData;
+
+  @State post: PostModel = {
+    id: 0,
+    userName: CommonConstants.DEFAULT_USERNAME,
+    userPicture: CommonConstants.DEFAULT_AVATOR,
+    postTitle: '',
+    postBody: '',
+    commentNum: 0,
+    likeNum: 0,
+    isLiked: 'false',
+    commentStr: ''
+  }
 
   @State title: string = "";
   @State content: string = "";
@@ -38,7 +53,19 @@ export struct PostingDialog{
           .onClick(()=>{
             console.log("日志："+JSON.stringify(this.title+this.content))
             // 数据库存储
-
+            this.post.postTitle = this.title
+            this.post.postBody = this.content
+            this.PostTable.getRdbStore(()=>{
+              this.PostTable.insertData(this.post,()=>{
+                console.log("日志：插入成功,"+JSON.stringify(this.post))
+              })
+            })
+            this.controller?.close();
+            //弹窗提示，发布成功
+            this.getUIContext().showAlertDialog({
+              title: "",
+              message: "发布成功",
+            })
           })
       }
       .margin({top:20,bottom:20})

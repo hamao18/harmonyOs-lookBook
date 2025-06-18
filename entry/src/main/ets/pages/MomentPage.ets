@@ -1,23 +1,35 @@
+import PostTable from "../common/database/tables/PostTable";
+import { PostsListComponent } from "../view/PostsListComponent";
+import PostModel from "../viewmodel/PostModel";
+
 @Entry
 @Component
-struct MomentPage {
-  @State message: string = 'Hello World';
+export struct MomentPage {
+  // 存放帖子列表数据
+  @State posts: Array<PostTable> = [];
+  @State isLike: boolean = false;
+  private PostTable = new PostTable(() => {});
+
+  aboutToAppear(): void {
+    this.PostTable.getRdbStore(() => {
+      this.PostTable.query(0, (result: PostTable[]) => {
+        this.posts = result;
+        // 打印数据
+        console.log("日志：MomentPage查询，" + JSON.stringify(this.posts))
+      }, true);
+    })
+  }
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('MomentPageHelloWorld')
-        .fontSize($r('app.float.page_text_font_size'))
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
+    Column() {
+      List(){
+        ForEach(this.posts, (post: PostModel) => {
+          ListItem(){
+            PostsListComponent({ post })
+          }
         })
-        .onClick(() => {
-          this.message = 'Welcome';
-        })
+      }
     }
     .height('100%')
-    .width('100%')
   }
 }

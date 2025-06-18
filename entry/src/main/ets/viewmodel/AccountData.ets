@@ -3,5 +3,4 @@ export default class AccountData {
   accountType: number = 0;
   typeText: string = '';
   amount: number = 0;
-  // realAmount: number = 0;
 }

@@ -8,7 +8,7 @@ import { PostingDialog } from '../view/PostingDialog';
 
 @Entry
 @Component
-struct MainPage {
+export struct MainPage {
   @State accounts: Array<AccountData> = [];
   @State searchText: string = '';
   @State isEdit: boolean = false;
@@ -20,7 +20,6 @@ struct MainPage {
     amount: 0
   };
   @State index: number = -1;
-
   //post弹窗使用
   @State item: AccountData = {
     id: 0,
@@ -28,12 +27,9 @@ struct MainPage {
     typeText: '',
     amount: 0
   };
-
-  private AccountTable = new AccountTable(() => {
-  });
+  private AccountTable = new AccountTable(() => {});
   private deleteList: Array<AccountData> = [];
   searchController: SearchController = new SearchController();
-
   dialogController: CustomDialogController = new CustomDialogController({
     builder: DialogComponent({
       isInsert: $isInsert,
@@ -43,7 +39,6 @@ struct MainPage {
     customStyle: true,
     alignment: DialogAlignment.Bottom
   });
-
   /**
    * post弹窗
    * @param item
@@ -126,6 +121,7 @@ struct MainPage {
   }
 
   build() {
+
     Stack() {
       Column() {
         Row() {
@@ -288,5 +284,6 @@ struct MainPage {
     .width(CommonConstants.FULL_WIDTH)
     .height(CommonConstants.FULL_HEIGHT)
     .backgroundColor($r('app.color.background_color'))
+
   }
 }
