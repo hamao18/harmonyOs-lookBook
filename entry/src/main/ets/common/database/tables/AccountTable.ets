@@ -32,6 +32,7 @@ export default class AccountTable {
     const valueBucket: relationalStore.ValuesBucket = generateBucket(account);
     let predicates = new relationalStore.RdbPredicates(CommonConstants.ACCOUNT_TABLE.tableName);
     predicates.equalTo('id', account.id);
+    console.log("日志：数据库更新操作，AccountData：" + JSON.stringify(valueBucket))
     this.accountTable.updateData(predicates, valueBucket, callback);
   }
 

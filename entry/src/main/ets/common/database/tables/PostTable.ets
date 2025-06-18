@@ -30,10 +30,18 @@ export default class PostTable {
   }
 
   updateData(post: PostModel, callback: Function) {
+    console.log("日志：数据库更新操作，postTable，post：" + JSON.stringify(post))
+    console.log('日志：数据库更新操作，postTable，post,userName：'+post.userName)
     const valueBucket: relationalStore.ValuesBucket = generateBucket(post);
+    console.log("日志：数据库更新操作，postTable，valueBucket：" + JSON.stringify(valueBucket))
     let predicates = new relationalStore.RdbPredicates(CommonConstants.POST_TABLE.tableName);
     predicates.equalTo('id', post.id);
     this.postTable.updateData(predicates, valueBucket, callback);
+  }
+
+  deleteAll(callback: Function) {
+    let predicates = new relationalStore.RdbPredicates(CommonConstants.POST_TABLE.tableName);
+    this.postTable.deleteData(predicates, callback);
   }
 
   //查询id或全部
@@ -84,12 +92,20 @@ export default class PostTable {
 function generateBucket(post: PostModel): relationalStore.ValuesBucket {
   let obj: relationalStore.ValuesBucket = {};
   obj.userName = post.userName;
+  console.log("日志：数据库插入操作，postTable，post,id：" + post.userName+':'+obj.userName)
   obj.userPicture = post.userPicture;
+  console.log("日志：数据库插入操作，postTable，post,userPicture：" + post.userPicture+':'+obj.userPicture)
   obj.postTitle = post.postTitle;
+  console.log("日志：数据库插入操作，postTable，post,postTitle：" + post.postTitle+':'+obj.postTitle)
   obj.postBody = post.postBody;
+  console.log("日志：数据库插入操作，postTable，post,postBody：" + post.postBody+':'+obj.postBody)
   obj.commentNum = post.commentNum;
+  console.log("日志：数据库插入操作，postTable，post,commentNum：" + post.commentNum+':'+obj.commentNum)
   obj.likeNum = post.likeNum;
+  console.log("日志：数据库插入操作，postTable，post,likeNum：" + post.likeNum+':'+obj.likeNum)
   obj.isLiked = post.isLiked;
+  console.log("日志：数据库插入操作，postTable，post,isLiked：" + post.isLiked+':'+obj.isLiked)
   obj.commentStr = post.commentStr;
+  console.log("日志：数据库插入操作，postTable，post,commentStr：" + post.commentStr+':'+obj.commentStr)
   return obj;
 }

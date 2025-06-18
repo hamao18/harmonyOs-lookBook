@@ -11,7 +11,7 @@ export struct PostingDialog{
   private PostTable = new PostTable(() => {});
   @Prop item: AccountData;
 
-  @State post: PostModel = {
+  post: PostModel = {
     id: 0,
     userName: CommonConstants.DEFAULT_USERNAME,
     userPicture: CommonConstants.DEFAULT_AVATOR,

@@ -1,6 +1,19 @@
 import PostTable from "../common/database/tables/PostTable";
 import PostModel from "../viewmodel/PostModel";
 
+interface LocalPostModel{
+  id: number,
+  userName: string,
+  userPicture:string,
+  postTitle:string,
+  postBody:string,
+  commentNum: number,
+  likeNum: number,
+  isLiked: string,
+  commentStr: string
+}
+
+
 @Entry
 @Component
 export struct PostsListComponent {
@@ -11,6 +24,9 @@ export struct PostsListComponent {
 
   private PostTable = new PostTable(() => {});
 
+  onPageShow(): void {
+    console.log("日志：onPageShow")
+  }
   aboutToAppear(): void {
     this.likeNum = this.post.likeNum;
     this.isLike = this.post.isLiked == 'true';

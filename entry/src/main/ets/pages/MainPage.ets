@@ -27,7 +27,8 @@ export struct MainPage {
     typeText: '',
     amount: 0
   };
-  private AccountTable = new AccountTable(() => {});
+  private AccountTable = new AccountTable(() => {
+  });
   private deleteList: Array<AccountData> = [];
   searchController: SearchController = new SearchController();
   dialogController: CustomDialogController = new CustomDialogController({
@@ -56,14 +57,14 @@ export struct MainPage {
   itemEnd(item: AccountData) {
     // 构建尾端滑出组件
     Image($r('app.media.share'))
-      .width(34)
-      .height(34)
-      .margin({
-        left: 20,
-        right: 20,
-        bottom: 10,
-        top: 10
-      })
+      .width(30)
+      .height(30)
+        .margin({
+          left: 20,
+          right: 20,
+          bottom: 10,
+          top: 10
+        })
       .onClick(() => {
         //日志打印item里的内容
         console.log("日志：" + JSON.stringify(item))
