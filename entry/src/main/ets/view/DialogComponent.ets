@@ -18,28 +18,50 @@ export struct DialogComponent {
   @State curIndex: number = 0;
   @State curType: string = '';
 
+  //
+  /**
+   * 构建 Tab 标签栏的自定义组件
+   * 根据当前选中的索引值显示不同的文本（支出/收入），并设置样式
+   * @param index - 当前 Tab 的索引值，0 表示支出，1 表示收入
+   */
   @Builder
   TabBuilder(index: number) {
     Column() {
+      // 显示 Tab 文本，根据 index 判断是支出还是收入
       Text(index === 0 ? $r('app.string.pay_text') : $r('app.string.income_text'))
         .fontSize($r('app.float.font_size_M'))
-        .fontColor(this.curIndex === index ? $r('app.color.main_color') : Color.Gray)
+        .fontColor(
+          this.curIndex === index
+            ? $r('app.color.main_color') // 当前选中项使用主色
+            : Color.Gray // 非选中项使用灰色
+        )
     }
     .width($r('app.float.component_size_MP'))
-    .padding({ top: $r('app.float.edge_size_LM'), bottom: $r('app.float.edge_size_S') })
-    .margin({ bottom: $r('app.float.edge_size_S') })
+    .padding({
+      top: $r('app.float.edge_size_LM'),
+      bottom: $r('app.float.edge_size_S')
+    }) // 设置顶部和底部内边距
+    .margin({ bottom: $r('app.float.edge_size_S') }) // 设置底部外边距
     .border({
-      width: { bottom: this.curIndex === index ? $r('app.float.border_size_M') : '' },
-      color: this.curIndex === index ? $r('app.color.main_color') : Color.White
+      width: {
+        bottom: this.curIndex === index
+          ? $r('app.float.border_size_M') // 选中项显示底部边框
+          : '' // 非选中项不显示底部边框
+      },
+      color: this.curIndex === index
+        ? $r('app.color.main_color') // 选中项边框颜色为主色
+        : Color.White // 非选中项边框颜色为白色
     })
   }
 
+  //显示数据，父组件传递数据
   aboutToAppear() {
     this.inputAmount = this.newAccount.amount.toString();
     this.curIndex = this.newAccount.accountType;
     this.curType = this.newAccount.typeText;
   }
 
+  //选择账单类型
   selectAccount(item: AccountItem) {
     this.newAccount.accountType = item.accountType;
     this.newAccount.typeText = item.typeText;
@@ -56,6 +78,7 @@ export struct DialogComponent {
         })
 
       Tabs({ barPosition: BarPosition.Start, index: this.curIndex }) {
+        // 支出
         TabContent() {
           Scroll(this.scroller) {
             Row() {
@@ -89,6 +112,7 @@ export struct DialogComponent {
         .tabBar(this.TabBuilder(0))
         .margin({ bottom: $r('app.float.edge_size_LP') })
 
+        //收入
         TabContent() {
           Scroll(this.scroller) {
             Row() {

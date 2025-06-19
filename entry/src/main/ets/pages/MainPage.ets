@@ -73,9 +73,9 @@ export struct MainPage {
       })
   }
 
+  //判断插入还是修改
   accept(isInsert: boolean, newAccount: AccountData): void {
     if (isInsert) {
-      Logger.info(`${CommonConstants.INDEX_TAG}`, `The account inserted is:  ${JSON.stringify(newAccount)}`);
       this.AccountTable.insertData(newAccount, (id: number) => {
         newAccount.id = id;
         this.accounts.push(newAccount);
@@ -91,6 +91,7 @@ export struct MainPage {
     }
   }
 
+  //数据初始化，数据库查询
   aboutToAppear() {
     this.AccountTable.getRdbStore(() => {
       this.AccountTable.query(0, (result: AccountData[]) => {
@@ -99,6 +100,7 @@ export struct MainPage {
     });
   }
 
+  //选中列表项
   selectListItem(item: AccountData) {
     this.isInsert = false;
     this.index = this.accounts.indexOf(item);
@@ -110,6 +112,7 @@ export struct MainPage {
     };
   }
 
+  //删除列表项
   deleteListItem() {
     for (let i = 0; i < this.deleteList.length; i++) {
       let index = this.accounts.indexOf(this.deleteList[i]);
@@ -122,14 +125,21 @@ export struct MainPage {
   }
 
   build() {
-
     Stack() {
       Column() {
+        //logo, 应用名
         Row() {
+          //logo
+          Image($r('app.media.chicken'))
+            .width(50)
+            .height(50)
+            .borderRadius(25)
+            .margin({left:10})
+
           Text($r('app.string.MainAbility_label'))
             .height($r('app.float.component_size_SP'))
             .fontSize($r('app.float.font_size_L'))
-            .margin({ left: $r('app.float.font_size_L') })
+            // .margin({ left: $r('app.float.font_size_L') })
 
           Image($rawfile('ic_public_edit.svg'))
             .width($r('app.float.component_size_S'))
@@ -143,6 +153,7 @@ export struct MainPage {
         .justifyContent(FlexAlign.SpaceBetween)
         .margin({ top: $r('app.float.edge_size_M'), bottom: $r('app.float.edge_size_MM') })
 
+        //搜索框
         Row() {
           Search({
             value: this.searchText,
@@ -155,7 +166,7 @@ export struct MainPage {
             .borderColor($r('app.color.border_color'))
             .placeholderFont({ size: $r('app.float.font_size_M') })
             .textFont({ size: $r('app.float.font_size_M') })
-            .backgroundColor(Color.White)
+            .backgroundColor('#A0E9E5')
             .onChange((searchValue: string) => {
               this.searchText = searchValue;
             })
@@ -175,6 +186,7 @@ export struct MainPage {
         .padding({ left: $r('app.float.edge_size_M'), right: $r('app.float.edge_size_M') })
         .margin({ top: $r('app.float.edge_size_S'), bottom: $r('app.float.edge_size_S') })
 
+        //账本数据渲染
         Row() {
           List({ space: CommonConstants.FULL_SIZE }) {
             ForEach(this.accounts, (item: AccountData, index: number) => {
@@ -193,27 +205,29 @@ export struct MainPage {
                     .layoutWeight(1)
 
                   if (!this.isEdit) {
+                    // 非编辑模式：显示金额信息
                     Text(item.accountType === 0 ? '-' + item.amount.toString() : '+' + item.amount.toString())
-                      .fontSize($r('app.float.font_size_M'))
-                      .fontColor(item.accountType === 0 ? $r('app.color.pay_color') : $r('app.color.main_color'))
+                      .fontSize($r('app.float.font_size_M'))  // 设置字体大小
+                      .fontColor(item.accountType === 0 ? $r('app.color.pay_color') : $r('app.color.main_color'))  // 根据账目类型设置颜色（支出为红色，收入为绿色）
                       .align(Alignment.End)
-                      .flexGrow(CommonConstants.FULL_SIZE)
+                      .flexGrow(CommonConstants.FULL_SIZE)  // 占据剩余空间
 
                   } else {
+                    // 编辑模式：显示复选框用于多选删除
                     Row() {
-                      Toggle({ type: ToggleType.Checkbox })
+                      Toggle({ type: ToggleType.Checkbox })  // 创建一个复选框组件
                         .onChange((isOn) => {
                           if (isOn) {
-                            this.deleteList.push(item);
+                            this.deleteList.push(item);  // 如果选中，将当前项加入删除列表
                           } else {
                             let index = this.deleteList.indexOf(item);
-                            this.deleteList.splice(index, 1);
+                            this.deleteList.splice(index, 1);  // 如果取消选中，从删除列表中移除
                           }
                         })
                     }
-                    .align(Alignment.End)
-                    .flexGrow(CommonConstants.FULL_SIZE)
-                    .justifyContent(FlexAlign.End)
+                    .align(Alignment.End)  // 右对齐
+                    .flexGrow(CommonConstants.FULL_SIZE)  // 占据剩余空间
+                    .justifyContent(FlexAlign.End)  // 内容右对齐
                   }
 
                 }
@@ -226,6 +240,7 @@ export struct MainPage {
                 this.selectListItem(item);
                 this.dialogController.open();
               })
+              // 滑动分享
               .swipeAction({
                 end: {
                   builder: () => {
@@ -239,7 +254,7 @@ export struct MainPage {
           }
           .width(CommonConstants.FULL_WIDTH)
           .borderRadius($r('app.float.radius_size_L'))
-          .backgroundColor(Color.White)
+          .backgroundColor('#77DAD2')
         }
         .width(CommonConstants.FULL_WIDTH)
         .padding({ left: $r('app.float.edge_size_M'), right: $r('app.float.edge_size_M') })
@@ -249,6 +264,7 @@ export struct MainPage {
       .width(CommonConstants.FULL_WIDTH)
       .height(CommonConstants.FULL_HEIGHT)
 
+      //添加按钮
       if (!this.isEdit) {
         Button() {
           Image($rawfile('add.png'))
@@ -268,9 +284,11 @@ export struct MainPage {
         })
       }
 
+      //删除
       if (this.isEdit) {
         Button() {
-          Image($rawfile('delete.png'))
+          Image($rawfile('delete.svg'))
+            .backgroundColor('#5DCEBE')
         }
         .width($r('app.float.component_size_MP'))
         .height($r('app.float.component_size_MP'))
@@ -284,7 +302,7 @@ export struct MainPage {
     }
     .width(CommonConstants.FULL_WIDTH)
     .height(CommonConstants.FULL_HEIGHT)
-    .backgroundColor($r('app.color.background_color'))
+    .backgroundColor('#5DCEBE')
 
   }
 }

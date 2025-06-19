@@ -14,12 +14,9 @@ export struct SettingPage {
         .height(40)
         .onClick(() => {
           console.log("日志：清理动态信息")
-          this.PostTable.getRdbStore(() => {
-            this.PostTable.deleteAll(() => {
-              console.log("日志：清理动态信息成功")
-            })
+          this.PostTable.deleteAll(() => {
+            console.log("日志：清理动态信息成功")
           })
-
           this.getUIContext().showAlertDialog({
             title: "",
             message: "删除成功",

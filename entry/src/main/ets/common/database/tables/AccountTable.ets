@@ -39,7 +39,6 @@ export default class AccountTable {
   /**
    * 查询数据
    * @param amount 金额，当 isAll 为 false 时作为过滤条件
-   * @param callback 回调函数，用于返回查询结果
    * @param isAll 是否查询全部数据，默认为 true
    */
   query(amount: number, callback: Function, isAll: boolean = true) {

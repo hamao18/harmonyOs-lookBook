@@ -10,7 +10,7 @@ export default class CommonConstants {
     securityLevel: relationalStore.SecurityLevel.S1
   };
   /**
-   * Account table config.
+   * Account 表配置.
    */
   static readonly ACCOUNT_TABLE: AccountTable = {
     tableName: 'accountTable',
@@ -38,16 +38,14 @@ export default class CommonConstants {
     columns: ['id', 'userName', 'userPicture', 'postTitle','postBody','commentNum','likeNum','isLiked','commentStr']
   };
   /**
-   * Search text of Search component.
+   * 默认文字.
    */
-  static readonly SEARCH_TEXT = '搜索';
-  /**
-   * toast text of prompt component.
-   */
+  static readonly SEARCH_TEXT = '金额搜索';
+
   static readonly TOAST_TEXT_1 = '账目类型不能为空';
   static readonly TOAST_TEXT_2 = '账目金额不为正整数';
   /**
-   * Component size.
+   * 大小.
    */
   static readonly FULL_WIDTH = '100%';
   static readonly FULL_HEIGHT = '100%';
@@ -59,14 +57,14 @@ export default class CommonConstants {
   static readonly FULL_SIZE = 1;
   static readonly PROMPT_BOTTOM = '70vp';
   /**
-   * Component location.
+   * 位置.
    */
   static readonly EDIT_POSITION_X = '80%';
   static readonly EDIT_POSITION_Y = '90%';
   static readonly DELETE_POSITION_X = '50%';
   static readonly DELETE_POSITION_Y = '90%';
   /**
-   * Log tag.
+   * Log 日志.
    */
   static readonly RDB_TAG = '[Debug.Rdb]';
   static readonly TABLE_TAG_ACOUNTTABLE = '[Debug.AccountTable]';

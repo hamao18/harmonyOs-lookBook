@@ -52,8 +52,8 @@ struct PostComponent {
     console.log("日志：PostComponent,comments:", JSON.stringify(this.comments))
     console.log("日志：PostComponent,commentStr:", JSON.stringify(this.commentStr))
     this.isLiked = this.post.isLiked == 'true';
-    this.PostTable.getRdbStore(() => {
-    })
+    // this.PostTable.getRdbStore(() => {
+    // })
   }
 
   build() {
@@ -82,10 +82,10 @@ struct PostComponent {
       .width('100%')
       .height(60)
 
+      //帖子内容
       Scroll() {
-        // 贴子正文
         Column() {
-          // 图片展示
+          // 背景图展示
           Swiper() {
             Image($r('app.media.default_postImage_2'))
               .width('100%')
@@ -236,7 +236,6 @@ struct PostComponent {
       }
       .height('85%')
 
-
       //发表评论
       Row() {
         TextInput({
@@ -299,10 +298,8 @@ struct PostComponent {
             this.post.isLiked = this.post.isLiked == 'true' ? 'false' : 'true';
             this.isLiked = !this.isLiked;
             //更新数据
-            this.PostTable.getRdbStore(() => {
-              this.PostTable.updateData(this.post, () => {
-                console.log("日志：更新成功," + JSON.stringify(this.post))
-              })
+            this.PostTable.updateData(this.post, () => {
+              console.log("日志：更新成功," + JSON.stringify(this.post))
             })
           })
       }

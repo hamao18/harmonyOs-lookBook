@@ -37,7 +37,6 @@ export struct MomentPage {
         } else {
           List() {
             ForEach(this.posts, (post: PostModel) => {
-
               ListItem() {
                 PostsListComponent({ post })
               }
